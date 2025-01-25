@@ -14,6 +14,13 @@ import {
   ContextMenuTrigger,
   ContextMenuSeparator,
 } from "@/components/ui/context-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // Create the ResponsiveGridLayout by applying WidthProvider
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -29,6 +36,7 @@ const data = [
 
 const StatCard = ({ title, value, trend }: { title: string; value: string; trend: "up" | "down" }) => {
   const { toast } = useToast();
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleEdit = () => {
     toast({
@@ -64,7 +72,15 @@ const StatCard = ({ title, value, trend }: { title: string; value: string; trend
         <Card className="p-4 h-full">
           <div className="flex items-center justify-between">
             <GripHorizontal className="cursor-move text-gray-400" size={20} />
-            <Settings className="text-gray-400" size={20} />
+            <Settings 
+              className="text-gray-400 cursor-pointer hover:text-gray-600" 
+              size={20} 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowSettings(true);
+              }}
+            />
           </div>
           <h3 className="text-lg font-semibold mt-2 text-gray-700">{title}</h3>
           <div className="flex items-center justify-between mt-2">
@@ -73,6 +89,35 @@ const StatCard = ({ title, value, trend }: { title: string; value: string; trend
               {trend === "up" ? <ArrowUpRight size={20} /> : <ArrowDownRight size={20} />}
             </span>
           </div>
+
+          <Dialog open={showSettings} onOpenChange={setShowSettings}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Widget Settings</DialogTitle>
+                <DialogDescription>
+                  Configure your widget settings here.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <button onClick={handleEdit} className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md">
+                  <Edit className="inline mr-2 h-4 w-4" />
+                  Edit
+                </button>
+                <button onClick={handleFullscreen} className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md">
+                  <Maximize2 className="inline mr-2 h-4 w-4" />
+                  Fullscreen
+                </button>
+                <button onClick={handleShare} className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md">
+                  <Share2 className="inline mr-2 h-4 w-4" />
+                  Share
+                </button>
+                <button onClick={handleRemove} className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md text-red-600">
+                  <Trash2 className="inline mr-2 h-4 w-4" />
+                  Remove
+                </button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </Card>
       </ContextMenuTrigger>
       <ContextMenuContent>
