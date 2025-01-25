@@ -3,9 +3,10 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
-import { ArrowUpRight, ArrowDownRight, GripHorizontal, Settings, Maximize2, Share2, Trash2, Edit } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowUpRight, ArrowDownRight, GripHorizontal, Settings, Maximize2, Share2, Trash2, Edit, Plus } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import {
   ContextMenu,
@@ -20,6 +21,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 
 // Create the ResponsiveGridLayout by applying WidthProvider
@@ -221,6 +223,7 @@ const ChartWidget = () => {
 
 const Index = () => {
   const { toast } = useToast();
+  const [showAddWidget, setShowAddWidget] = useState(false);
   const [layouts, setLayouts] = useState({
     lg: [
       { i: "stats1", x: 0, y: 0, w: 3, h: 2 },
@@ -238,30 +241,96 @@ const Index = () => {
     });
   };
 
+  const addWidget = (type: string) => {
+    const newId = `${type}${Date.now()}`;
+    const newLayouts = {
+      lg: [
+        ...layouts.lg,
+        {
+          i: newId,
+          x: (layouts.lg.length * 3) % 12,
+          y: Infinity, // Puts it at the bottom
+          w: 3,
+          h: 2,
+        },
+      ],
+    };
+    setLayouts(newLayouts);
+    setShowAddWidget(false);
+    toast({
+      title: "Widget Added",
+      description: `New ${type} widget has been added to your dashboard`,
+    });
+  };
+
   return (
     <Layout>
-      <ResponsiveGridLayout
-        className="layout"
-        layouts={layouts}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
-        rowHeight={100}
-        onLayoutChange={handleLayoutChange}
-        draggableHandle=".cursor-move"
-      >
-        <div key="stats1">
-          <StatCard title="Revenue" value="$50,240" trend="up" />
+      <div className="p-4">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <Button onClick={() => setShowAddWidget(true)} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" /> Add Widget
+          </Button>
         </div>
-        <div key="stats2">
-          <StatCard title="Users" value="1,429" trend="up" />
-        </div>
-        <div key="stats3">
-          <StatCard title="Conversion" value="24.5%" trend="down" />
-        </div>
-        <div key="chart">
-          <ChartWidget />
-        </div>
-      </ResponsiveGridLayout>
+
+        <Dialog open={showAddWidget} onOpenChange={setShowAddWidget}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Widget</DialogTitle>
+              <DialogDescription>
+                Choose a widget type to add to your dashboard
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-4 py-4">
+              <Button
+                variant="outline"
+                className="h-24 flex flex-col items-center justify-center gap-2"
+                onClick={() => addWidget("stats")}
+              >
+                <div className="text-2xl">📊</div>
+                Statistics
+              </Button>
+              <Button
+                variant="outline"
+                className="h-24 flex flex-col items-center justify-center gap-2"
+                onClick={() => addWidget("chart")}
+              >
+                <div className="text-2xl">📈</div>
+                Chart
+              </Button>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowAddWidget(false)}>
+                Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <ResponsiveGridLayout
+          className="layout"
+          layouts={layouts}
+          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+          cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+          rowHeight={100}
+          onLayoutChange={handleLayoutChange}
+          draggableHandle=".cursor-move"
+        >
+          {layouts.lg.map((layout) => (
+            <div key={layout.i}>
+              {layout.i.includes("stats") ? (
+                <StatCard
+                  title="Revenue"
+                  value="$50,240"
+                  trend="up"
+                />
+              ) : (
+                <ChartWidget />
+              )}
+            </div>
+          ))}
+        </ResponsiveGridLayout>
+      </div>
     </Layout>
   );
 };
