@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
 import { ArrowUpRight, ArrowDownRight, GripHorizontal } from "lucide-react";
+import { Layout } from "@/components/Layout";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -71,8 +72,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Dashboard</h1>
+    <Layout>
       <ResponsiveGridLayout
         className="layout"
         layouts={layouts}
@@ -95,7 +95,7 @@ const Index = () => {
           <ChartWidget />
         </div>
       </ResponsiveGridLayout>
-    </div>
+    </Layout>
   );
 };
 
