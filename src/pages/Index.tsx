@@ -15,6 +15,9 @@ import {
   ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 
+// Create the ResponsiveGridLayout by applying WidthProvider
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
 // Sample data for the chart
 const data = [
   { name: "Jan", value: 400 },
