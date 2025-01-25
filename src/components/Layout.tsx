@@ -1,5 +1,5 @@
-import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
-import { Plus, LayoutDashboard, Settings } from "lucide-react"
+import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarTrigger, SidebarRail } from "@/components/ui/sidebar"
+import { Plus, LayoutDashboard, Settings, Menu } from "lucide-react"
 import { Button } from "./ui/button"
 import { Separator } from "./ui/separator"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
@@ -10,9 +10,9 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full">
-        <Sidebar>
+        <Sidebar variant="sidebar" collapsible="icon">
           <SidebarContent>
             <SidebarHeader className="p-4">
               <h2 className="text-lg font-semibold">Widgets</h2>
@@ -40,11 +40,15 @@ export function Layout({ children }: LayoutProps) {
               </SidebarMenu>
             </SidebarGroup>
           </SidebarContent>
+          <SidebarRail />
         </Sidebar>
         <div className="flex-1">
           <header className="border-b">
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
+                <SidebarTrigger className="md:hidden">
+                  <Menu className="h-5 w-5" />
+                </SidebarTrigger>
                 <Select defaultValue="default">
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Select Dashboard" />

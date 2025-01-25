@@ -65,3 +65,11 @@
 .react-resizable-handle:hover {
   border-color: #4F46E5;
 }
+
+/* Add responsive styles for the sidebar */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    z-index: 50;
+  }
+}
