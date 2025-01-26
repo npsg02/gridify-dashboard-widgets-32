@@ -23,6 +23,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 // Create the ResponsiveGridLayout by applying WidthProvider
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -224,6 +226,7 @@ const ChartWidget = () => {
 const Index = () => {
   const { toast } = useToast();
   const [showAddWidget, setShowAddWidget] = useState(false);
+  const [isScrollable, setIsScrollable] = useState(true);
   const [layouts, setLayouts] = useState({
     lg: [
       { i: "stats1", x: 0, y: 0, w: 3, h: 2 },
@@ -249,7 +252,7 @@ const Index = () => {
         {
           i: newId,
           x: (layouts.lg.length * 3) % 12,
-          y: Infinity, // Puts it at the bottom
+          y: Infinity,
           w: 3,
           h: 2,
         },
@@ -265,9 +268,19 @@ const Index = () => {
 
   return (
     <Layout>
-      <div className="p-4">
+      <div className={`p-4 ${!isScrollable ? "h-screen overflow-hidden" : ""}`}>
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <div className="flex items-center gap-6">
+            <h1 className="text-2xl font-bold">Dashboard</h1>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="scrollable-mode"
+                checked={isScrollable}
+                onCheckedChange={setIsScrollable}
+              />
+              <Label htmlFor="scrollable-mode">Scrollable Dashboard</Label>
+            </div>
+          </div>
           <Button onClick={() => setShowAddWidget(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" /> Add Widget
           </Button>
@@ -307,29 +320,31 @@ const Index = () => {
           </DialogContent>
         </Dialog>
 
-        <ResponsiveGridLayout
-          className="layout"
-          layouts={layouts}
-          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-          cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
-          rowHeight={100}
-          onLayoutChange={handleLayoutChange}
-          draggableHandle=".cursor-move"
-        >
-          {layouts.lg.map((layout) => (
-            <div key={layout.i}>
-              {layout.i.includes("stats") ? (
-                <StatCard
-                  title="Revenue"
-                  value="$50,240"
-                  trend="up"
-                />
-              ) : (
-                <ChartWidget />
-              )}
-            </div>
-          ))}
-        </ResponsiveGridLayout>
+        <div className={!isScrollable ? "h-[calc(100vh-12rem)] overflow-hidden" : ""}>
+          <ResponsiveGridLayout
+            className="layout"
+            layouts={layouts}
+            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+            cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+            rowHeight={100}
+            onLayoutChange={handleLayoutChange}
+            draggableHandle=".cursor-move"
+          >
+            {layouts.lg.map((layout) => (
+              <div key={layout.i}>
+                {layout.i.includes("stats") ? (
+                  <StatCard
+                    title="Revenue"
+                    value="$50,240"
+                    trend="up"
+                  />
+                ) : (
+                  <ChartWidget />
+                )}
+              </div>
+            ))}
+          </ResponsiveGridLayout>
+        </div>
       </div>
     </Layout>
   );
