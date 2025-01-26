@@ -43,7 +43,7 @@ export function Layout({ children }: LayoutProps) {
           <SidebarRail />
         </Sidebar>
         <div className="flex-1">
-          <header className="border-b">
+          <header className="border-b sticky top-0 bg-background z-50">
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="md:hidden">
