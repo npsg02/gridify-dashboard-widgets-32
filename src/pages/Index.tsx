@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { DashboardChecklist } from "@/components/DashboardChecklist";
 
 // Create the ResponsiveGridLayout by applying WidthProvider
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -233,6 +234,7 @@ const Index = () => {
       { i: "stats2", x: 3, y: 0, w: 3, h: 2 },
       { i: "stats3", x: 6, y: 0, w: 3, h: 2 },
       { i: "chart", x: 0, y: 2, w: 12, h: 4 },
+      { i: "checklist", x: 0, y: 3, w: 12, h: 4 },
     ],
   });
 
@@ -294,7 +296,7 @@ const Index = () => {
                 Choose a widget type to add to your dashboard
               </DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-2 gap-4 py-4">
+            <div className="grid grid-cols-3 gap-4 py-4">
               <Button
                 variant="outline"
                 className="h-24 flex flex-col items-center justify-center gap-2"
@@ -310,6 +312,14 @@ const Index = () => {
               >
                 <div className="text-2xl">📈</div>
                 Chart
+              </Button>
+              <Button
+                variant="outline"
+                className="h-24 flex flex-col items-center justify-center gap-2"
+                onClick={() => addWidget("checklist")}
+              >
+                <div className="text-2xl">✓</div>
+                Checklist
               </Button>
             </div>
             <DialogFooter>
@@ -338,6 +348,8 @@ const Index = () => {
                     value="$50,240"
                     trend="up"
                   />
+                ) : layout.i.includes("checklist") ? (
+                  <DashboardChecklist />
                 ) : (
                   <ChartWidget />
                 )}
